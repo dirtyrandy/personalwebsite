@@ -5,8 +5,40 @@
         "profile_name": "caleb-cli",
         "project_name": "personalwebsite",
         "runtime": "python3.7",
-        "s3_bucket": "personalwebsite-zappa",
-        "apigateway_enabled": false,
-        "touch": true
+        "s3_bucket": "personalwebsite-zappa-dev",
+        "certificate_arn": "arn:aws:acm:us-east-1:644965670892:certificate/d8d5f491-0dd9-4081-8e0f-d53c7303d874",
+        "domain": "dev.seecook.info",
+        "cors": true,
+        "environment_variables": {
+            "pool_id": "us-east-1_eY17I3I61"
+        },
+        "extra_permissions": [{
+            "Effect": "Allow",
+            "Action": ["cognito-idp:*"],
+            "Resource": "arn:aws:cognito-idp:us-east-1:644965670892:userpool/us-east-1_eY17I3I61"
+        }],
+        "events": [
+        ]
+    },
+    "prod": {
+        "app_function": "main.app",
+        "aws_region": "us-east-1",
+        "profile_name": "caleb-cli",
+        "project_name": "personalwebsite",
+        "runtime": "python3.7",
+        "s3_bucket": "personalwebsite-zappa-prod",
+        "certificate_arn": "arn:aws:acm:us-east-1:644965670892:certificate/c540b86b-fc39-4ff2-96d2-a6aa2ca1c0fb",
+        "domain": "seecook.info",
+        "cors": true,
+        "environment_variables": {
+            "pool_id": "us-east-1_eY17I3I61"
+        },
+        "extra_permissions": [{
+            "Effect": "Allow",
+            "Action": ["cognito-idp:*"],
+            "Resource": "arn:aws:cognito-idp:us-east-1:644965670892:userpool/us-east-1_eY17I3I61"
+        }],
+        "events": [
+        ]
     }
 }
