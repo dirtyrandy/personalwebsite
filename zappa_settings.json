@@ -9,16 +9,21 @@
         "certificate_arn": "arn:aws:acm:us-east-1:644965670892:certificate/d8d5f491-0dd9-4081-8e0f-d53c7303d874",
         "domain": "dev.seecook.info",
         "cors": true,
+        "tags": {
+            "project_id": "a5fa7a18-178f-4a78-b87c-ea8d0142eb7b",
+            "name": "personalwebsite"
+        },
         "environment_variables": {
             "pool_id": "us-east-1_eY17I3I61",
-            "cloudfront_url": "https://d8w39ckkuzbui.cloudfront.net"
+            "cloudfront_url": "https://d8w39ckkuzbui.cloudfront.net",
+            "logout_redirect_uri": "https://dev.seecook.info/oidc/logout"
         },
-        "extra_permissions": [{
-            "Effect": "Allow",
-            "Action": ["cognito-idp:*"],
-            "Resource": "arn:aws:cognito-idp:us-east-1:644965670892:userpool/us-east-1_eY17I3I61"
-        }],
-        "events": [
+        "extra_permissions": [
+            {
+                "Effect": "Allow",
+                "Action": ["cognito-idp:*"],
+                "Resource": "arn:aws:cognito-idp:us-east-1:644965670892:userpool/us-east-1_eY17I3I61"
+            }
         ]
     },
     "prod": {
@@ -31,16 +36,21 @@
         "certificate_arn": "arn:aws:acm:us-east-1:644965670892:certificate/c540b86b-fc39-4ff2-96d2-a6aa2ca1c0fb",
         "domain": "seecook.info",
         "cors": true,
+        "tags": {
+            "project_id": "a5fa7a18-178f-4a78-b87c-ea8d0142eb7b",
+            "name": "personalwebsite"
+        },
         "environment_variables": {
             "pool_id": "us-east-1_eY17I3I61",
-            "cloudfront_url": "https://d8w39ckkuzbui.cloudfront.net"
+            "cloudfront_url": "https://d8w39ckkuzbui.cloudfront.net",
+            "logout_redirect_uri": "https://seecook.info/oidc/logout"
         },
-        "extra_permissions": [{
-            "Effect": "Allow",
-            "Action": ["cognito-idp:*"],
-            "Resource": "arn:aws:cognito-idp:us-east-1:644965670892:userpool/us-east-1_eY17I3I61"
-        }],
-        "events": [
+        "extra_permissions": [
+            {
+                "Effect": "Allow",
+                "Action": ["cognito-idp:*"],
+                "Resource": "arn:aws:cognito-idp:us-east-1:644965670892:userpool/us-east-1_eY17I3I61"
+            }
         ]
     }
 }

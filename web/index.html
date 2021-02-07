@@ -2,14 +2,20 @@
 
 <html>
 	<head>
-		<title>Home - seecook.info</title>
+		<title>Caleb Cook</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="{{ cloudfront_url }}/assets/css/main.css" />
 		<noscript><link rel="stylesheet" href="web/assets/css/noscript.css" /></noscript>
 	</head>
 	<body class="is-preload">
+		{% if custom_message %}
+			{{ custom_message }}
+		{% endif %}
 
+		{% if user %}
+			<p align="center">Welcome {{ user }}!</p>
+		{% endif %}
 		<!-- Wrapper-->
 			<div id="wrapper">
 
@@ -18,7 +24,10 @@
 						<a href="#" class="icon solid fa-home"><span>Home</span></a>
 						<a href="#work" class="icon solid fa-folder"><span>Work</span></a>
 						<a href="#contact" class="icon solid fa-envelope"><span>Contact</span></a>
-						<a href="https://twitter.com/ajlkn" class="icon brands fa-twitter"><span>Twitter</span></a>
+						<a href="https://github.com/dirtyrandy" class="fab fa-github-square" target="_blank"><span>Github</span></a>
+						<a href="https://www.linkedin.com/in/calebbcook/" class="fab fa-linkedin" target="_blank"><span>LinkedIn</span></a>
+						<a href="{{ login_url }}" class="fas fa-sign-in-alt"><span>Login</span></a>
+						<a href="{{ logout_url }}" class="fas fa-sign-out-alt"><span>Logout</span></a>
 					</nav>
 
 				<!-- Main -->
@@ -27,8 +36,8 @@
 						<!-- Me -->
 							<article id="home" class="panel intro">
 								<header>
-									<h1>Caleb Cook</h1>
-									<p>Cloud Identity Engineer</p>
+									<h1><b>Caleb Cook</b></h1>
+									<p>Identity Security Engineer</p>
 								</header>
 								<a href="#work" class="jumplink pic">
 									<span class="arrow icon solid fa-chevron-right"><span>See my work</span></span>
@@ -39,15 +48,21 @@
 						<!-- Work -->
 							<article id="work" class="panel">
 								<header>
-									<h2>Work</h2>
+									<h2>Work Experience</h2>
 								</header>
 								<p>
-									Phrase or whatever
+									Identity security professional that's also a full stack python developer.
 								</p>
 								<section>
-									<div class="row">
-
-									</div>
+									<h3><b>Product Experience</b></h3>
+										<div class="list" align="left">
+											PingFederate, PingOne/PingID, Azure/AAD, Amazon Web Services, Radiant Logic ICS/FID, Savyint, Splunk, Jira
+										</div>
+									<br>
+									<h3><b>Technologies</b></h3>
+										<div class="list" align="left">
+											SAML 2.0, OAuth2, OIDC, AWS, AAD, Zappa/Serverless, GIT, CICD
+										</div>
 								</section>
 							</article>
 
@@ -56,7 +71,7 @@
 								<header>
 									<h2>Contact Me</h2>
 								</header>
-								<form action="#" method="post">
+								<!--<form action="{{ email_me_url }}" method="post" enctype="application/x-www-form-urlencoded">
 									<div>
 										<div class="row">
 											<div class="col-6 col-12-medium">
@@ -76,7 +91,7 @@
 											</div>
 										</div>
 									</div>
-								</form>
+								</form>-->
 							</article>
 
 					</div>
@@ -84,7 +99,7 @@
 				<!-- Footer -->
 					<div id="footer">
 						<ul class="copyright">
-							<li>&copy; Untitled.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+							<li>&copy; All rights reserved. 2021</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
 						</ul>
 					</div>
 
