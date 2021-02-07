@@ -10,7 +10,8 @@
         "domain": "dev.seecook.info",
         "cors": true,
         "environment_variables": {
-            "pool_id": "us-east-1_eY17I3I61"
+            "pool_id": "us-east-1_eY17I3I61",
+            "cloudfront_url": "https://d8w39ckkuzbui.cloudfront.net"
         },
         "extra_permissions": [{
             "Effect": "Allow",
@@ -31,7 +32,8 @@
         "domain": "seecook.info",
         "cors": true,
         "environment_variables": {
-            "pool_id": "us-east-1_eY17I3I61"
+            "pool_id": "us-east-1_eY17I3I61",
+            "cloudfront_url": "https://d8w39ckkuzbui.cloudfront.net"
         },
         "extra_permissions": [{
             "Effect": "Allow",
