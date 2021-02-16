@@ -1,5 +1,4 @@
 import os
-import re
 
 from flask import Flask, redirect, request
 from flask_oidc import OpenIDConnect
@@ -11,8 +10,6 @@ from helpers import functions
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
-
-email_validator = re.compile(r'(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)')
 
 app = Flask(__name__)
 app.config['OIDC_CLIENT_SECRETS'] = 'client_secrets.json'
@@ -70,16 +67,13 @@ def logout():
 
 @app.route('/email-me', methods=['POST'])
 def email_me():
-    if email_validator.search(request.form['email']):
-        functions.email(
-            name=request.form['name'],
-            email_address=request.form['email'],
-            subject=request.form['subject'],
-            message=request.form['message']
-        )
-        return redirect('/', 302)
-    else:
-        return redirect('/#contact', 302)
+    functions.email(
+        name=request.form['name'],
+        email_address=request.form['email'],
+        subject=request.form['subject'],
+        message=request.form['message']
+    )
+    return redirect('/', 302)
 
 
 @app.route('/oidc/logout')
