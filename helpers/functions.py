@@ -1,16 +1,9 @@
-import json
 import os
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 
 import boto3
-import requests
-from flask import request
-from jinja2 import Template
 import logging
 
-from .objects import email_parser
-from config import email_template_directory, email_sender, requester_response_template, personal_address
+from config import email_sender, requester_response_template
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -18,80 +11,93 @@ logger.setLevel(logging.INFO)
 ses = boto3.client('ses')
 
 
-def email():
-    parsed_args = email_parser.parse_args(request)
+def email(name: str, email_address: str, subject: str, message: str):
 
-    send_requester_response = send_response_email(parsed_args, requester_response_template)
-    send_personal_response = send_personal_email(parsed_args)
+    send_requester_response = send_response_email(email_address, requester_response_template)
+    send_personal_response = send_personal_email(
+        name=name,
+        email_address=email_address,
+        subject=subject,
+        message=message
+    )
 
     logger.info(f'Requester response sent: {send_requester_response}')
     logger.info(f'Personal response sent: {send_personal_response}')
-    logger.info(f'Email args: {parsed_args}')
 
 
-def send_response_email(email_args: dict, template: str) -> bool:
-    template_file = next(
-        file for file in email_template_directory.iterdir() if template == file.name.lower()
-    )
-    template_content = Template(template_file.read_text()).render(email_args)
-
-    message = MIMEMultipart('mixed')
-    msg_body = MIMEMultipart('alternative')
-    msg_body.attach(MIMEText(template_content.encode('utf-8'), 'plain', 'utf-8'))
-    msg_body.attach(MIMEText(template_content.encode('utf-8'), 'html', 'utf-8'))
-    message.attach(msg_body)
-
-    message['From'] = email_sender
-    message['To'] = [email_args['email_address']]
-    message['Subject'] = 'Thanks for reaching out!'
-
+def send_response_email(email_address: str, template_content: str):
     try:
-        ses.send_raw_email(
-            RawMessage={
-                'Data': message.as_string()
+        send_email = ses.send_email(
+            Source=email_sender,
+            Destination={
+                'ToAddresses': [email_address]
+            },
+            Message={
+                'Subject': {
+                    'Data': 'Thanks for reaching out!',
+                    'Charset': 'utf-8'
+                },
+                'Body': {
+                    'Text': {
+                        'Data': template_content,
+                        'Charset': 'utf-8'
+                    },
+                    'Html': {
+                        'Data': template_content,
+                        'Charset': 'utf-8'
+                    }
+                }
             }
         )
-        return True
+        return True if 'MessageId' in send_email else False
     except Exception as e:
         logger.error(str(e))
         return False
 
 
-def send_personal_email(email_args: dict) -> bool:
-    email_body = str(
-        f'Sender: {email_args["name"]}\n'
-        f'Sender email: {email_args["email_address"]}\n'
-        f'Subject: {email_args["subject"]}\n'
-        f'Message: {email_args["message"]}'
-    )
-
-    message = MIMEMultipart('mixed')
-    msg_body = MIMEMultipart('alternative')
-    msg_body.attach(MIMEText(email_body, 'plain', 'utf-8'))
-    msg_body.attach(MIMEText(email_body, 'html', 'utf-8'))
-    message.attach(msg_body)
-
-    message['From'] = email_sender
-    message['To'] = [personal_address]
-    message['Subject'] = f'Website message from {email_args["name"]}'
-
+def send_personal_email(name: str, email_address: str, subject: str, message: str):
     try:
-        ses.send_raw_email(
-            RawMessage={
-                'Data': message.as_string()
+        email_body = str(
+            f'Sender: {name}\n'
+            f'Sender email: {email_address}\n'
+            f'Subject: {subject}\n'
+            f'Message: {message}'
+        )
+
+        logger.info(f'Email data:\n{email_body}')
+
+        send_email = ses.send_email(
+            Source=email_sender,
+            Destination={
+                'ToAddresses': [os.getenv('personal_address')]
+            },
+            Message={
+                'Subject': {
+                    'Data': f'Personal website email from {email_address}',
+                    'Charset': 'utf-8'
+                },
+                'Body': {
+                    'Text': {
+                        'Data': email_body.replace('\n', '<br>'),
+                        'Charset': 'utf-8'
+                    },
+                    'Html': {
+                        'Data': email_body.replace('\n', '<br>'),
+                        'Charset': 'utf-8'
+                    }
+                }
             }
         )
-        return True
+        return True if 'MessageId' in send_email else False
+
     except Exception as e:
         logger.error(str(e))
         return False
 
 
-def logout():
-    logout_request = requests.get(
-        f'https://auth.seecook.info/logout?'
-        f'client_id=1fu24611953cnn87ee907quqlf&'
+def build_logout() -> str:
+    return str(
+        f'{os.getenv("logout_uri")}?'
+        f'client_id={os.getenv("client_id")}&'
         f'logout_uri={os.getenv("logout_redirect_uri")}'
     )
-
-    logger.info(f'logout response: {logout_request.text}')

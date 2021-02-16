@@ -1,6 +1,6 @@
 .idea
 venv
 __pycache__
-client_secrets.json
-config.py
+personalwebsite_secrets.json
 zappa_settings.json
+client_secrets.json

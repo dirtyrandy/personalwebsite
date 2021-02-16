@@ -1,29 +1,30 @@
 import os
+import re
 
-from flask import Flask, redirect
+from flask import Flask, redirect, request
 from flask_oidc import OpenIDConnect
 from jinja2 import Template
 import logging
 
-from config import template_directory, random_long_string
+from config import template_directory
 from helpers import functions
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
+email_validator = re.compile(r'(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)')
 
 app = Flask(__name__)
-app.config["OIDC_CLIENT_SECRETS"] = "client_secrets.json"
-app.config["OIDC_CALLBACK_ROUTE"] = "/oidc/callback"
-app.config["OIDC_SCOPES"] = ["openid", "email", "profile", "phone", "aws.cognito.signin.user.admin"]
-app.config["SECRET_KEY"] = random_long_string
-app.config["OIDC_ID_TOKEN_COOKIE_NAME"] = "token"
+app.config['OIDC_CLIENT_SECRETS'] = 'client_secrets.json'
+app.config['OIDC_CALLBACK_ROUTE'] = '/oidc/callback'
+app.config['OIDC_SCOPES'] = ['openid', 'email', 'profile', 'phone', 'aws.cognito.signin.user.admin']
+app.config['SECRET_KEY'] = os.getenv('random_long_string')
+app.config['OIDC_ID_TOKEN_COOKIE_NAME'] = 'token'
 app.config['OIDC_TOKEN_SECURE'] = True
 oidc = OpenIDConnect(app)
 
 
 @app.route('/')
-@app.route('/home')
 def root():
     if oidc.user_loggedin:
         user = oidc.user_getfield('email')
@@ -33,6 +34,7 @@ def root():
     template_file = next(
         file for file in template_directory.iterdir() if 'index.html' == file.name.lower()
     )
+
     return Template(template_file.read_text()).render(
         cloudfront_url=os.getenv('cloudfront_url'),
         user=user,
@@ -46,34 +48,44 @@ def root():
 @app.route('/login')
 @oidc.require_login
 def login():
-    return redirect('/home', 302)
+    return redirect('/', 302)
+
+
+@app.route('/protected')
+@oidc.require_login
+def protected():
+    return f'Hello {oidc.user_getfield("email")}'
 
 
 @app.route('/logout')
 def logout():
-
     if oidc.user_loggedin:
         oidc.logout()
 
     return redirect(
-        f'https://auth.seecook.info/logout?'
-        f'client_id=1fu24611953cnn87ee907quqlf&'
-        f'logout_uri={os.getenv("logout_redirect_uri")}',
+        functions.build_logout(),
         302
     )
 
 
 @app.route('/email-me', methods=['POST'])
-@oidc.accept_token
 def email_me():
-    functions.email()
-    return
+    if email_validator.search(request.form['email']):
+        functions.email(
+            name=request.form['name'],
+            email_address=request.form['email'],
+            subject=request.form['subject'],
+            message=request.form['message']
+        )
+        return redirect('/', 302)
+    else:
+        return redirect('/#contact', 302)
 
 
 @app.route('/oidc/logout')
 def process_logout():
     logger.info('completed logout')
-    return redirect('/home', 302)
+    return redirect('/', 302)
 
 
 if __name__ == '__main__':

@@ -6,9 +6,11 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="{{ cloudfront_url }}/assets/css/main.css" />
-		<noscript><link rel="stylesheet" href="web/assets/css/noscript.css" /></noscript>
+		<noscript><link rel="stylesheet" href="{{ cloudfront_url }}/assets/css/noscript.css" /></noscript>
+		<script src="//www.google.com/recaptcha/api.js" async defer></script>
 	</head>
 	<body class="is-preload">
+		<link rel="shortcut icon" href="{{ cloudfront_url }}/images/favicon.ico">
 		{% if custom_message %}
 			{{ custom_message }}
 		{% endif %}
@@ -71,27 +73,28 @@
 								<header>
 									<h2>Contact Me</h2>
 								</header>
-								<!--<form action="{{ email_me_url }}" method="post" enctype="application/x-www-form-urlencoded">
+								<form action="{{ email_me_url }}" method="post" enctype="application/x-www-form-urlencoded">
 									<div>
 										<div class="row">
 											<div class="col-6 col-12-medium">
-												<input type="text" name="name" placeholder="Name" />
+												<input type="text" name="name" placeholder="Name" required/>
 											</div>
 											<div class="col-6 col-12-medium">
-												<input type="text" name="email" placeholder="Email" />
+												<input type="email" name="email" placeholder="Email" required/>
 											</div>
 											<div class="col-12">
-												<input type="text" name="subject" placeholder="Subject" />
+												<input type="text" name="subject" placeholder="Subject" required/>
 											</div>
 											<div class="col-12">
-												<textarea name="message" placeholder="Message" rows="6"></textarea>
+												<textarea name="message" placeholder="Message" rows="6" required></textarea>
 											</div>
+											<div class="g-recaptcha" data-sitekey="6LfdxQETAAAAAC_aJjUQgz8PX11QJ5ssEw6EPKWw" data-size="compact" data-callback="captcha_callback"></div>
 											<div class="col-12">
-												<input type="submit" value="Send Message" />
+												<input id="submit" type="submit" value="Send Message" disabled/>
 											</div>
 										</div>
 									</div>
-								</form>-->
+								</form>
 							</article>
 
 					</div>
@@ -111,6 +114,7 @@
 			<script src="{{ cloudfront_url }}/assets/js/breakpoints.min.js"></script>
 			<script src="{{ cloudfront_url }}/assets/js/util.js"></script>
 			<script src="{{ cloudfront_url }}/assets/js/main.js"></script>
+			<script src="{{ cloudfront_url }}/assets/js/custom.js"></script>
 
 	</body>
 </html>
